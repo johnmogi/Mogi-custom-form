@@ -49,42 +49,28 @@ function displayPhoneError(field, error) {
 
 // Form submission
 function submitFormData(form) {
-  const submitButton = form.querySelector("[type='submit']");
-  submitButton.value = "Sending ...";
-  submitButton.disabled = true;
-
   const data = new FormData(form);
 
-  // First fetch request to submit the form data to Google Sheets
-  fetch(form.action, {
-    method: "POST",
-    body: data,
-  })
-    .then((response) => response.text())
-    .then((googleSheetsResponse) => {
-      console.log("Google Sheets Response:", googleSheetsResponse); // Log Google Sheets response
-
-      // If form submission to Google Sheets is successful, proceed to send the email
-      const newData = new FormData(form);
-
-      // Second fetch request to send the email using PHP script
-      return fetch(ajax_object.ajax_url + "?action=submit_custom_form", {
-        method: "POST",
-        body: newData,
-      });
-    })
-    .then((response) => response.text())
-    .then((emailResponse) => {
-      console.log("Email Response:", emailResponse); // Log email sending response
-
-      // Handle email sending success
+  // Send both requests concurrently
+  Promise.all([
+    fetch(form.action, {
+      method: "POST",
+      body: data,
+    }),
+    fetch(ajax_object.ajax_url + "?action=submit_custom_form", {
+      method: "POST",
+      body: data,
+    }),
+  ])
+    .then(([googleSheetsResponse, emailResponse]) => {
+      // Handle responses
+      console.log("Google Sheets Response:", googleSheetsResponse);
+      console.log("Email Response:", emailResponse);
       form.innerHTML = `<div class="success" style="background:green;color:#fff;padding:10px">Thanks for reaching out! will contact you soon</div>`;
     })
     .catch((error) => {
-      // Handle any errors
       console.error("Error:", error);
-      submitButton.value = "Send";
-      submitButton.disabled = false;
+      form.innerHTML = `<div class="error" style="background:red;color:#fff;padding:10px">Something went wrong! Please try again later.</div>`;
     });
 }
 

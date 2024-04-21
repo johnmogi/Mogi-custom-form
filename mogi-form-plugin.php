@@ -2,7 +2,7 @@
 /*
 Plugin Name: MOGI Custom Form
 Description: One Stop Google sheets light weight form.
-Version: 1.1.1
+Version: 1.1.2
 Author: John Mogi
 Author Email: dev@johnmogi.com
 */
@@ -52,6 +52,15 @@ function custom_form_enqueue_assets()
         array(),
         '1.0.0'
     );
+
+        // Enqueue your custom image
+        wp_enqueue_style(
+            'custom-form-image',
+            plugin_dir_url(__FILE__) . 'images/OIG3.jpg',
+            array(),
+            '1.0.0'
+        );
+
 }
 add_action('wp_enqueue_scripts', 'custom_form_enqueue_assets');
 
@@ -69,7 +78,7 @@ function custom_form_management_page()
     
 
  #   $submissionUrl = get_option('custom_form_submission_url', '');
-    $submissionUrl = 'https://script.google.com/macros/s/AKfycbxsOY1sygb6erQKUYy4oQTBncyn6p8lpFIjlMwmW_ZzOjb-Ymg-ebT2FFoFbUq7N6oC/exec';  // Hardcoded URL
+    $submissionUrl = 'https://script.google.com/macros/s/AKfycbyH7yjWde9qCvyxYffOGWxHU7Goa_AWLAnx0ArWdLtiYtiYbmwK1MBv7fkfDFm4-X2V/exec';  // Hardcoded URL
 
  #   $submissionEmail = get_option('custom_form_submission_email', '');
     $submissionEmail = 'anguru@gmail.com';  // Hardcoded email
